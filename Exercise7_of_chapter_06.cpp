@@ -80,10 +80,12 @@ constexpr char help='H';    //added
 class Token_stream
 {
 public:
+    Token_stream (istream& s): is{s}, full{false} {}    //added istream constructor
     Token get();
     void putback(Token t);
     void ignore(char c);
 private:
+    istream& is;    //istream variable
     bool full {false};
     Token buffer;
 };
@@ -178,7 +180,7 @@ Token Token_stream::get()
         return buffer;
     }
     char ch;
-    while(cin.get(ch)&&isspace(ch)) //reads whitespaces
+    while(is.get(ch)&&isspace(ch)) //reads whitespaces
     {
         if(ch=='\n')
         {
@@ -213,9 +215,9 @@ Token Token_stream::get()
     case '8':
     case '9':
     {
-        cin.putback(ch);
+        is.putback(ch);
         double val;
-        cin >> val;
+        is >> val;
         return Token{number, val};
     }
 
@@ -224,11 +226,11 @@ Token Token_stream::get()
         {
             string s;
             s+=ch;
-            while(cin.get(ch) && (isalpha(ch)||isdigit(ch)||ch=='_'))
+            while(is.get(ch) && (isalpha(ch)||isdigit(ch)||ch=='_'))
             {
                 s+=ch;
             }
-            cin.putback(ch);
+            is.putback(ch);
             /*if(s==declkey)
             {
                 return Token{let};
@@ -268,7 +270,7 @@ void Token_stream::ignore(char c)
     }
     full=false;
     char ch=0;
-    while(cin>>ch)
+    while(is>>ch)
     {
         if(ch==c)
         {
@@ -277,7 +279,7 @@ void Token_stream::ignore(char c)
     }
 }
 
-Token_stream ts;
+Token_stream ts{cin};
 
 void clean_up_mess()
 {
@@ -417,7 +419,7 @@ void help_message() {
 
 void calculate()   // Changed to void because we handle quit inside
 {
-    while (cin)
+    while (true)
     {
         try
         {
