@@ -431,7 +431,10 @@ void calculate()   // Changed to void because we handle quit inside
                 continue;
             }
             ts.putback(t);
-            cout << result << statement() << "\n";
+
+            double current_answer=statement();  //catch the answer, print and save it to 'ans'
+            cout << result << current_answer << "\n";
+            st.setv("ans",current_answer);
         }
         catch (exception& e)
         {
@@ -454,6 +457,7 @@ try
     st.declare("pi",3.1415926535,true);
     st.declare("e",2.7182818284,true);
     st.declare("k",1000,true);
+    st.declare("ans",0,false);  //Declare 'ans' as a changeable variable
 
     calculate();
     keep_window_open("~0");
